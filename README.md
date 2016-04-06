@@ -1,6 +1,6 @@
 # MobileTaximeter
 
-This is an small app that I created for studies purpose.
+This is a small app that I created for studies purpose.
 
 Here you can find a sample on how to use:
 
