@@ -1,103 +1,127 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using FreshMvvm;
-using Plugin.Geolocator;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Taxi.Services;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
 
 namespace Taxi.PageModels
 {
+    /// <summary>
+    /// Map PageModel.
+    /// </summary>
     public class MapPageModel : FreshBasePageModel
     {
+        /// <summary>
+        /// Gets or sets the start run command.
+        /// </summary>
+        /// <value>The start run command.</value>
         public ICommand StartRunCommand
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the center point.
+        /// </summary>
+        /// <value>The center point.</value>
         public Position CenterPoint
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets the button text.
+        /// </summary>
+        /// <value>The button text.</value>
         public string ButtonText
         {
-            get
-            {
-                if (IsRunning)
-                    return "Stop";
+            get;
+            set;
+        } = "Start";
 
-                return "Start";
-            }
-        }
-
-
-        public bool IsRunning
+        /// <summary>
+        /// Gets or sets the run cost.
+        /// </summary>
+        /// <value>The run cost.</value>
+        public string RunCost
         {
             get;
             set;
         }
 
+
+        /// <summary>
+        /// Gets or sets the radius.
+        /// </summary>
+        /// <value>The radius.</value>
         public Distance Radius
         {
             get;
             set;
         } = Distance.FromKilometers(5);
 
-        Plugin.Geolocator.Abstractions.IGeolocator m_locator;
 
-        public MapPageModel()
-        {
-        }
+        TaximeterService m_taximeter;
 
+        /// <summary>
+        /// Init the Page Model
+        /// </summary>
+        /// <param name="initData">Init data.</param>
         public override async void Init(object initData)
         {
             base.Init(initData);
-            StartRunCommand = new Command(StartRun);
-            await GetCurrentLocation();
 
-            m_locator.PositionChanged += (object sender, Plugin.Geolocator.Abstractions.PositionEventArgs eventArgs) => TaxiMoved(eventArgs);
-        }
+            m_taximeter = new TaximeterService();
 
-        void StartRun()
-        {
-            IsRunning = true;
-            StartRunCommand = new Command(StopRun);
-            m_locator.StartListeningAsync(1000, 0);
-        }
+            m_taximeter.TaxiMoved += (sender, e) => { RunCost = ((TaximeterService)sender).RunCost; };
+            m_taximeter.RunStarted += (sender, e) => { ButtonText = "Stop"; };
+            m_taximeter.RunStoped += (sender, e) => { ButtonText = "Start"; };
 
-        void StopRun()
-        {
-            IsRunning = false;
-            StartRunCommand = new Command(StartRun);
-            m_locator.StopListeningAsync();
-        }
-
-        void TaxiMoved(Plugin.Geolocator.Abstractions.PositionEventArgs eventArgs)
-        {
-            CenterPoint = new Position(eventArgs.Position.Latitude, eventArgs.Position.Longitude);
-        }
-
-        async Task<Plugin.Geolocator.Abstractions.Position> GetCurrentLocation()
-        {
             await AskPersmissionToUseGPS();
 
-            m_locator = CrossGeolocator.Current;
-            m_locator.DesiredAccuracy = 50;
-
-            var position = await m_locator.GetPositionAsync(10000);
-
-            CenterPoint = new Position(position.Latitude, position.Longitude);
-
-            return position;
+            RunCost = 0.ToString("C");
+            StartRunCommand = new Command(StartRun);
+            SetCenterPointToCurrentLocation();
         }
 
+        /// <summary>
+        /// Starts the run.
+        /// </summary>
+        /// <returns>The run.</returns>
+        void StartRun()
+        {
+            SetCenterPointToCurrentLocation();
+            StartRunCommand = new Command(StopRun);
+            m_taximeter.StartRun();
+        }
+
+        /// <summary>
+        /// Stops the run.
+        /// </summary>
+        /// <returns>The run.</returns>
+        void StopRun()
+        {
+            m_taximeter.StopRun();
+            StartRunCommand = new Command(StartRun);
+            RunCost = m_taximeter.RunCost;
+        }
+
+        async void SetCenterPointToCurrentLocation()
+        {
+            var position = await m_taximeter.GetCurrentLocation();
+            CenterPoint = new Position(position.Latitude, position.Longitude);
+        }
+
+        /// <summary>
+        /// Asks the persmission to use gps.
+        /// </summary>
+        /// <returns>The persmission to use gps.</returns>
         async Task AskPersmissionToUseGPS()
         {
             var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Location);

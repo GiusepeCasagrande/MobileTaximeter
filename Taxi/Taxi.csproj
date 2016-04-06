@@ -37,6 +37,7 @@
     </Compile>
     <Compile Include="PageModels\MapPageModel.cs" />
     <Compile Include="Controls\ExtendedMap.cs" />
+    <Compile Include="Services\TaximeterService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -81,6 +82,7 @@
     <Folder Include="Pages\" />
     <Folder Include="PageModels\" />
     <Folder Include="Controls\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Pages\MapPage.xaml">
