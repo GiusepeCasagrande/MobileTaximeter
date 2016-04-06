@@ -2,7 +2,7 @@
 
 This is an small app that I created for studies purpose.
 
-Here you can find a small sample on how to use:
+Here you can find a sample on how to use:
 
 - Xamarin.Forms
 - Xamarin.Forms.Maps

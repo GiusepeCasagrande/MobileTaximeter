@@ -28,9 +28,21 @@ namespace Taxi.PageModels
 
         public string ButtonText
         {
+            get
+            {
+                if (IsRunning)
+                    return "Stop";
+
+                return "Start";
+            }
+        }
+
+
+        public bool IsRunning
+        {
             get;
             set;
-        } = "Start";
+        }
 
         public Distance Radius
         {
@@ -47,8 +59,29 @@ namespace Taxi.PageModels
         public override async void Init(object initData)
         {
             base.Init(initData);
-            StartRunCommand = new Command(async () => await GetCurrentLocation());
+            StartRunCommand = new Command(StartRun);
             await GetCurrentLocation();
+
+            m_locator.PositionChanged += (object sender, Plugin.Geolocator.Abstractions.PositionEventArgs eventArgs) => TaxiMoved(eventArgs);
+        }
+
+        void StartRun()
+        {
+            IsRunning = true;
+            StartRunCommand = new Command(StopRun);
+            m_locator.StartListeningAsync(1000, 0);
+        }
+
+        void StopRun()
+        {
+            IsRunning = false;
+            StartRunCommand = new Command(StartRun);
+            m_locator.StopListeningAsync();
+        }
+
+        void TaxiMoved(Plugin.Geolocator.Abstractions.PositionEventArgs eventArgs)
+        {
+            CenterPoint = new Position(eventArgs.Position.Latitude, eventArgs.Position.Longitude);
         }
 
         async Task<Plugin.Geolocator.Abstractions.Position> GetCurrentLocation()
