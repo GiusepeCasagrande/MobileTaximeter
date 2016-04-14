@@ -1,5 +1,7 @@
 ﻿using System;
 using FreshMvvm;
+using Plugin.Geolocator;
+using Plugin.Geolocator.Abstractions;
 using Taxi.PageModels;
 using Taxi.Pages;
 using Xamarin.Forms;
@@ -10,6 +12,8 @@ namespace Taxi
     {
         public App()
         {
+            FreshIOC.Container.Register<IGeolocator>(CrossGeolocator.Current);
+
             var page = FreshPageModelResolver.ResolvePageModel<MapPageModel>();
             var basicNavContainer = new FreshNavigationContainer(page);
             MainPage = basicNavContainer;

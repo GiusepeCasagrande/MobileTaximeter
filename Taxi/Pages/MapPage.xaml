@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps" xmlns:exmaps="clr-namespace:Taxi.Controls;assembly=Taxi" x:Class="Taxi.Pages.MapPage">
-	<StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="0" Spacing="0">
-		<Label Text="{Binding RunCost}" />
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps" xmlns:exmaps="clr-namespace:Taxi.Controls;assembly=Taxi" x:Class="Taxi.Pages.MapPage" BackgroundColor="Black">
+	<StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="0, 60, 0, 0" Spacing="0">
+		<Label Text="{Binding CostDisplay}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" TextColor="Red" FontFamily="Digital-7Mono" FontSize="100" />
 		<exmaps:ExtendedMap IsShowingUser="true" WidthRequest="400" HeightRequest="400" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" x:Name="MainMap" MapType="Street" CenterPoint="{Binding CenterPoint}" Radius="{Binding Radius}" />
 		<Button Text="{Binding ButtonText}" Command="{Binding StartRunCommand}">
 		</Button>

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 
-namespace Taxi.Services
+namespace Taxi.Domain.Taximeter
 {
     public class TaximeterService
     {
@@ -45,23 +44,23 @@ namespace Taxi.Services
         /// Gets or sets the run cost.
         /// </summary>
         /// <value>The run cost.</value>
-        public string RunCost
+        public decimal RunCost
         {
             get;
             set;
         }
 
         const decimal RunValue = 5;
-        decimal m_cost = 0;
         IGeolocator m_locator;
-        Position m_currentPosition;
+        TaxiPosition m_currentTaxiPosition;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Taxi.Services.TaximeterService"/> class.
+        /// Initializes a new instance of the <see cref="T:Taxi.Domain.Taximeter.TaximeterService"/> class.
         /// </summary>
-        public TaximeterService()
+        /// <param name="locator">Locator.</param>
+        public TaximeterService(IGeolocator locator)
         {
-            m_locator = CrossGeolocator.Current;
+            m_locator = locator;
             m_locator.PositionChanged += (object sender, PositionEventArgs eventArgs) => MoveTaxi(eventArgs);
         }
 
@@ -71,7 +70,7 @@ namespace Taxi.Services
         /// <returns>The run.</returns>
         public void ResetRun()
         {
-            m_cost = 0;
+            RunCost = 0;
         }
 
         /// <summary>
@@ -79,15 +78,16 @@ namespace Taxi.Services
         /// </summary>
         /// <returns>The new position.</returns>
         /// <param name="eventArgs">Event arguments.</param>
-        Xamarin.Forms.Maps.Position MoveTaxi(PositionEventArgs eventArgs)
+        TaxiPosition MoveTaxi(PositionEventArgs eventArgs)
         {
-            RunCost = CalculateRunCost(m_currentPosition, eventArgs.Position);
+            var newTaxiPosition = new TaxiPosition(eventArgs.Position);
+            CalculateRunCost(m_currentTaxiPosition, newTaxiPosition);
 
             OnTaxiMoved();
 
-            m_currentPosition = eventArgs.Position;
+            m_currentTaxiPosition = newTaxiPosition;
 
-            return new Xamarin.Forms.Maps.Position(eventArgs.Position.Latitude, eventArgs.Position.Longitude);
+            return new TaxiPosition(eventArgs.Position.Latitude, eventArgs.Position.Longitude);
         }
 
         /// <summary>
@@ -117,15 +117,15 @@ namespace Taxi.Services
         /// Gets the current location.
         /// </summary>
         /// <returns>The current location.</returns>
-        public async Task<Position> GetCurrentLocation()
+        public async Task<TaxiPosition> GetCurrentLocation()
         {
             m_locator.DesiredAccuracy = 50;
 
             var position = await m_locator.GetPositionAsync(10000);
 
-            m_currentPosition = position;
+            m_currentTaxiPosition = new TaxiPosition(position.Latitude, position.Longitude);
 
-            return position;
+            return m_currentTaxiPosition;
         }
 
         /// <summary>
@@ -134,52 +134,12 @@ namespace Taxi.Services
         /// <returns>The run cost.</returns>
         /// <param name="oldPoint">Old point.</param>
         /// <param name="centerPoint">Center point.</param>
-        public string CalculateRunCost(Position oldPoint, Position centerPoint)
+        public decimal CalculateRunCost(TaxiPosition oldPoint, TaxiPosition centerPoint)
         {
-            var distance = DistanceInMetres(oldPoint.Latitude, oldPoint.Longitude, centerPoint.Latitude, centerPoint.Longitude);
-            m_cost += distance / 1000 * RunValue;
+            var distance = TaxiPosition.DistanceInMetres(oldPoint.Latitude, oldPoint.Longitude, centerPoint.Latitude, centerPoint.Longitude);
+            RunCost += distance / 1000 * RunValue;
 
-            return m_cost.ToString("C");
-        }
-
-        /// <summary>
-        /// Distances the in metres.
-        /// </summary>
-        /// <returns>The in metres.</returns>
-        /// <param name="lat1">Lat1.</param>
-        /// <param name="lon1">Lon1.</param>
-        /// <param name="lat2">Lat2.</param>
-        /// <param name="lon2">Lon2.</param>
-        public decimal DistanceInMetres(double lat1, double lon1, double lat2, double lon2)
-        {
-
-            if (lat1 == lat2 && lon1 == lon2)
-                return 0.0m;
-
-            var theta = lon1 - lon2;
-
-            var distance = Math.Sin(deg2rad(lat1)) * Math.Sin(deg2rad(lat2)) +
-                           Math.Cos(deg2rad(lat1)) * Math.Cos(deg2rad(lat2)) *
-                           Math.Cos(deg2rad(theta));
-
-            distance = Math.Acos(distance);
-            if (double.IsNaN(distance))
-                return 0.0m;
-
-            distance = rad2deg(distance);
-            distance = distance * 60.0 * 1.1515 * 1609.344;
-
-            return Convert.ToDecimal(distance);
-        }
-
-        static double deg2rad(double deg)
-        {
-            return (deg * Math.PI / 180.0);
-        }
-
-        static double rad2deg(double rad)
-        {
-            return (rad / Math.PI * 180.0);
+            return RunCost;
         }
     }
 }

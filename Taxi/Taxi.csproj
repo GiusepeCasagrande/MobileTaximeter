@@ -37,7 +37,6 @@
     </Compile>
     <Compile Include="PageModels\MapPageModel.cs" />
     <Compile Include="Controls\ExtendedMap.cs" />
-    <Compile Include="Services\TaximeterService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -82,12 +81,17 @@
     <Folder Include="Pages\" />
     <Folder Include="PageModels\" />
     <Folder Include="Controls\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Pages\MapPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Taxi.Domain\Taxi.Domain.csproj">
+      <Project>{62C6F4C9-2362-4E54-B40A-324CAA367F61}</Project>
+      <Name>Taxi.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.1.0.6529\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.1.0.6529\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

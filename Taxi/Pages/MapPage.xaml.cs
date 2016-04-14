@@ -10,6 +10,7 @@ namespace Taxi.Pages
         public MapPage()
         {
             InitializeComponent();
+            NavigationPage.SetHasNavigationBar(this, false);
         }
     }
 }

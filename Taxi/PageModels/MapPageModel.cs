@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using FreshMvvm;
+using Plugin.Geolocator.Abstractions;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
-using Taxi.Services;
+using Taxi.Domain.Taximeter;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -29,7 +30,7 @@ namespace Taxi.PageModels
         /// Gets or sets the center point.
         /// </summary>
         /// <value>The center point.</value>
-        public Position CenterPoint
+        public Xamarin.Forms.Maps.Position CenterPoint
         {
             get;
             set;
@@ -46,15 +47,22 @@ namespace Taxi.PageModels
         } = "Start";
 
         /// <summary>
-        /// Gets or sets the run cost.
+        /// Gets the cost display.
         /// </summary>
-        /// <value>The run cost.</value>
-        public string RunCost
+        /// <value>The cost display.</value>
+        public string CostDisplay
+        {
+            get
+            {
+                return RunCost.ToString("C");
+            } 
+        }
+
+        public decimal RunCost
         {
             get;
             set;
         }
-
 
         /// <summary>
         /// Gets or sets the radius.
@@ -69,6 +77,7 @@ namespace Taxi.PageModels
 
         TaximeterService m_taximeter;
 
+
         /// <summary>
         /// Init the Page Model
         /// </summary>
@@ -77,7 +86,7 @@ namespace Taxi.PageModels
         {
             base.Init(initData);
 
-            m_taximeter = new TaximeterService();
+            m_taximeter = new TaximeterService(FreshIOC.Container.Resolve<IGeolocator>());
 
             m_taximeter.TaxiMoved += (sender, e) => { RunCost = ((TaximeterService)sender).RunCost; };
             m_taximeter.RunStarted += (sender, e) => { ButtonText = "Stop"; };
@@ -85,7 +94,7 @@ namespace Taxi.PageModels
 
             await AskPersmissionToUseGPS();
 
-            RunCost = 0.ToString("C");
+            RunCost = 0;
             StartRunCommand = new Command(StartRun);
             SetCenterPointToCurrentLocation();
         }
@@ -115,7 +124,7 @@ namespace Taxi.PageModels
         async void SetCenterPointToCurrentLocation()
         {
             var position = await m_taximeter.GetCurrentLocation();
-            CenterPoint = new Position(position.Latitude, position.Longitude);
+            CenterPoint = new Xamarin.Forms.Maps.Position(position.Latitude, position.Longitude);
         }
 
         /// <summary>
