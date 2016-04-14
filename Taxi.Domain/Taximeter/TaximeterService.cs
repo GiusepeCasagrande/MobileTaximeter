@@ -41,10 +41,10 @@ namespace Taxi.Domain.Taximeter
         }
 
         /// <summary>
-        /// Gets or sets the run cost.
+        /// Gets or sets the current run cost.
         /// </summary>
-        /// <value>The run cost.</value>
-        public decimal RunCost
+        /// <value>The current run cost.</value>
+        public decimal CurrentRunCost
         {
             get;
             set;
@@ -70,7 +70,7 @@ namespace Taxi.Domain.Taximeter
         /// <returns>The run.</returns>
         public void ResetRun()
         {
-            RunCost = 0;
+            CurrentRunCost = 0;
         }
 
         /// <summary>
@@ -119,8 +119,6 @@ namespace Taxi.Domain.Taximeter
         /// <returns>The current location.</returns>
         public async Task<TaxiPosition> GetCurrentLocation()
         {
-            m_locator.DesiredAccuracy = 50;
-
             var position = await m_locator.GetPositionAsync(10000);
 
             m_currentTaxiPosition = new TaxiPosition(position.Latitude, position.Longitude);
@@ -137,9 +135,9 @@ namespace Taxi.Domain.Taximeter
         public decimal CalculateRunCost(TaxiPosition oldPoint, TaxiPosition centerPoint)
         {
             var distance = TaxiPosition.DistanceInMetres(oldPoint.Latitude, oldPoint.Longitude, centerPoint.Latitude, centerPoint.Longitude);
-            RunCost += distance / 1000 * RunValue;
+            CurrentRunCost += distance / 1000 * RunValue;
 
-            return RunCost;
+            return CurrentRunCost;
         }
     }
 }

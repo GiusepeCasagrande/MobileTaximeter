@@ -54,7 +54,7 @@ namespace Taxi.PageModels
         {
             get
             {
-                return RunCost.ToString("C");
+                return RunCost.ToString("0000.00");
             } 
         }
 
@@ -88,7 +88,7 @@ namespace Taxi.PageModels
 
             m_taximeter = new TaximeterService(FreshIOC.Container.Resolve<IGeolocator>());
 
-            m_taximeter.TaxiMoved += (sender, e) => { RunCost = ((TaximeterService)sender).RunCost; };
+            m_taximeter.TaxiMoved += (sender, e) => { RunCost = ((TaximeterService)sender).CurrentRunCost; };
             m_taximeter.RunStarted += (sender, e) => { ButtonText = "Stop"; };
             m_taximeter.RunStoped += (sender, e) => { ButtonText = "Start"; };
 
@@ -118,7 +118,7 @@ namespace Taxi.PageModels
         {
             m_taximeter.StopRun();
             StartRunCommand = new Command(StartRun);
-            RunCost = m_taximeter.RunCost;
+            RunCost = m_taximeter.CurrentRunCost;
         }
 
         async void SetCenterPointToCurrentLocation()

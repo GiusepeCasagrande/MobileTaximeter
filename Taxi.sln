@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taxi.Infrastructure", "Taxi.Infrastructure\Taxi.Infrastructure.csproj", "{A327C74A-98EA-467B-9502-D6B276268195}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taxi.Domain.UnitTests", "Taxi.Domain\Taxi.Domain.UnitTests\Taxi.Domain.UnitTests.csproj", "{2DF42A26-63DB-4275-AE71-64E5AFC318E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,11 +89,24 @@ Global
 		{A327C74A-98EA-467B-9502-D6B276268195}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{A327C74A-98EA-467B-9502-D6B276268195}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{A327C74A-98EA-467B-9502-D6B276268195}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Release|iPhone.Build.0 = Release|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9F0DA92C-A88B-4757-BFAD-C8537DC67822} = {BB850D48-00C9-4C9F-AB6B-42BEECDE674C}
 		{29D66613-EE08-4FAC-8026-DE1BE8637944} = {BB850D48-00C9-4C9F-AB6B-42BEECDE674C}
 		{62C6F4C9-2362-4E54-B40A-324CAA367F61} = {143969C3-C0DF-4238-A564-608A9ED47A1A}
 		{A327C74A-98EA-467B-9502-D6B276268195} = {D67D8E8D-BD83-4FE6-A1B3-C340934F1D92}
+		{2DF42A26-63DB-4275-AE71-64E5AFC318E4} = {143969C3-C0DF-4238-A564-608A9ED47A1A}
 	EndGlobalSection
 EndGlobal

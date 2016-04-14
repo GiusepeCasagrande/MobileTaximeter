@@ -12,6 +12,7 @@ namespace Taxi
     {
         public App()
         {
+            CrossGeolocator.Current.DesiredAccuracy = 50;
             FreshIOC.Container.Register<IGeolocator>(CrossGeolocator.Current);
 
             var page = FreshPageModelResolver.ResolvePageModel<MapPageModel>();
