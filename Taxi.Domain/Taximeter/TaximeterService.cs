@@ -50,7 +50,17 @@ namespace Taxi.Domain.Taximeter
             set;
         }
 
-        const decimal RunValue = 5;
+
+        /// <summary>
+        /// Gets or sets the value per kilometer.
+        /// </summary>
+        /// <value>The value per kilometer.</value>
+        public decimal ValuePerKilometer
+        {
+            get;
+            set;
+        } = 5;
+
         IGeolocator m_locator;
         TaxiPosition m_currentTaxiPosition;
 
@@ -73,6 +83,12 @@ namespace Taxi.Domain.Taximeter
             CurrentRunCost = 0;
         }
 
+        public decimal Distance
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Moves the taxi.
         /// </summary>
@@ -81,7 +97,10 @@ namespace Taxi.Domain.Taximeter
         TaxiPosition MoveTaxi(PositionEventArgs eventArgs)
         {
             var newTaxiPosition = new TaxiPosition(eventArgs.Position);
-            CalculateRunCost(m_currentTaxiPosition, newTaxiPosition);
+
+            Distance = TaxiPosition.DistanceInMetres(m_currentTaxiPosition.Latitude, m_currentTaxiPosition.Longitude, newTaxiPosition.Latitude, newTaxiPosition.Longitude);
+
+            CalculateCurrentRunCost();
 
             OnTaxiMoved();
 
@@ -94,11 +113,14 @@ namespace Taxi.Domain.Taximeter
         /// Starts the run.
         /// </summary>
         /// <returns>The run.</returns>
-        public void StartRun()
+        public async Task StartRun()
         {
             ResetRun();
             IsRunning = true;
-            m_locator.StartListeningAsync(1000, 0);
+
+            await GetCurrentLocation();
+            await m_locator.StartListeningAsync(1000, 0);
+
             OnRunStarted();
         }
 
@@ -130,12 +152,9 @@ namespace Taxi.Domain.Taximeter
         /// Calculates the run cost.
         /// </summary>
         /// <returns>The run cost.</returns>
-        /// <param name="oldPoint">Old point.</param>
-        /// <param name="centerPoint">Center point.</param>
-        public decimal CalculateRunCost(TaxiPosition oldPoint, TaxiPosition centerPoint)
+        public decimal CalculateCurrentRunCost()
         {
-            var distance = TaxiPosition.DistanceInMetres(oldPoint.Latitude, oldPoint.Longitude, centerPoint.Latitude, centerPoint.Longitude);
-            CurrentRunCost += distance / 1000 * RunValue;
+            CurrentRunCost += Distance / 1000 * ValuePerKilometer;
 
             return CurrentRunCost;
         }
