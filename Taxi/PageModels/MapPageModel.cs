@@ -64,6 +64,12 @@ namespace Taxi.PageModels
             set;
         }
 
+        public Color ButtonColor
+        {
+            get;
+            set;
+        } = Color.Green;
+
         /// <summary>
         /// Gets or sets the radius.
         /// </summary>
@@ -89,8 +95,8 @@ namespace Taxi.PageModels
             m_taximeter = new TaximeterService(FreshIOC.Container.Resolve<IGeolocator>());
 
             m_taximeter.TaxiMoved += (sender, e) => { RunCost = ((TaximeterService)sender).CurrentRunCost; };
-            m_taximeter.RunStarted += (sender, e) => { ButtonText = "Stop"; };
-            m_taximeter.RunStoped += (sender, e) => { ButtonText = "Start"; };
+            m_taximeter.RunStarted += (sender, e) => { ButtonText = "Stop"; ButtonColor = Color.Red; };
+            m_taximeter.RunStoped += (sender, e) => { ButtonText = "Start"; ButtonColor = Color.Green; };
 
             await AskPersmissionToUseGPS();
 
