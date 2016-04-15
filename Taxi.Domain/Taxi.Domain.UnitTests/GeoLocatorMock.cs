@@ -98,6 +98,13 @@ namespace Taxi.Domain.UnitTests
             }
         }
         public event EventHandler<PositionErrorEventArgs> PositionError;
+        public void OnPositionError()
+        {
+            if (PositionError != null)
+            {
+                PositionError(this, null);
+            }
+        }
 
         public Task<Position> GetPositionAsync(int timeoutMilliseconds = -1, CancellationToken? token = default(CancellationToken?), bool includeHeading = false)
         {

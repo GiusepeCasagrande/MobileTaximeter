@@ -3,5 +3,13 @@
 	<uses-sdk android:minSdkVersion="20" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<application android:label="Taxi.Droid"></application>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-feature android:glEsVersion="0x00020000" android:required="true" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<application android:label="Taxi.Droid">
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAySM2CYf1M2IO4MJ_ShLVy4DwHvYuVNuc" />
+	</application>
 </manifest>
