@@ -2,6 +2,8 @@
 
 This is a small app that I created for studies purpose.
 
+![](docs/images/mainScreen.jpg)
+
 Here you can find a sample on how to use:
 
 - Xamarin.Forms
